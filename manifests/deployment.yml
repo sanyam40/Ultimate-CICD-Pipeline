@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cicd
+  labels:
+    app: cicd
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cicd
+  template:
+    metadata:
+      labels:
+        app: cicd
+    spec:
+      containers:
+      - name: cicd
+        image: sanyam40/ultimate-cicd-pipeline:replaceImageTag
+        ports:
+        - containerPort: 3000
