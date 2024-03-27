@@ -5,7 +5,9 @@ pipeline {
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
-    
+    stages {
+        
+
         stage('Install NodeJS') {
             steps {
                 sh 'sudo apt-get install -y nodejs'
@@ -66,4 +68,4 @@ pipeline {
             }
         }
     }
-
+}
