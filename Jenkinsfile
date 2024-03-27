@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/sanyam40/Ultimate-CICD-Pipeline'
+                // git 'https://github.com/sanyam40/Ultimate-CICD-Pipeline'
             }
         }
 
@@ -27,9 +27,12 @@ pipeline {
         }
 
         stage('Static Code Analysis') {
+            environment {
+                SONAR_URL = "http://13.60.47.70:9000/"
+            }
             steps {
-                withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
-                    sh "cd sanyam40/Ultimate-CICD && sonar-scanner -Dsonar.login=${SONAR_TOKEN} -Dsonar.host.url=${SONAR_URL}"
+                withCredentials([string(credentialsId: 'sonarqube', variable: 'sonarqube')]) {
+                    sh "cd sanyam40/Ultimate-CICD && sonar-scanner -Dsonar.login=${sonarqube} -Dsonar.host.url=${sonarqube}"
                 }
             }
         }
@@ -41,9 +44,11 @@ pipeline {
             }
             steps {
                 sh "cd sanyam40/Ultimate-CICD && docker build -t ${DOCKER_IMAGE} ."
-                def dockerImage = docker.image("${DOCKER_IMAGE}")
-                docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIALS) {
-                    dockerImage.push()
+                script {
+                    def dockerImage = docker.image("${DOCKER_IMAGE}")
+                    dockerImage.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIALS) {
+                        dockerImage.push()
+                    }
                 }
             }
         }
@@ -58,8 +63,8 @@ pipeline {
                     sh """
                         git config user.email "sanyamnarang40@gmail.com"
                         git config user.name "sanyam40"
-                        sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" sanyam40/Ultimate-CICD/manifests/deployment.yml
-                        git add sanyam40/Ultimate-CICD/manifests/deployment.yml
+                        sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" /manifests/deployment.yml
+                        git add manifests/deployment.yml
                         git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                         git push https://${GITHUB_TOKEN}@github.com/${GIT_USER}/${GIT_REPO_NAME} HEAD:main
                     """
