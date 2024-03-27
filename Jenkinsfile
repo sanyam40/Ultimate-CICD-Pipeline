@@ -6,6 +6,12 @@ pipeline {
         }
     }
     stages {
+        stage('Checkout') {
+            steps {
+                // git 'https://github.com/sanyam40/Ultimate-CICD-Pipeline'
+            }
+        }
+
         stage('Install NodeJS') {
             steps {
                 sh 'sudo apt-get install -y nodejs'
