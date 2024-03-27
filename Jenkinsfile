@@ -6,15 +6,10 @@ pipeline {
         }
     }
     stages {
-        stage('Checkout') {
-            steps {
-                // git 'https://github.com/sanyam40/Ultimate-CICD-Pipeline'
-            }
-        }
-
         stage('Install NodeJS') {
             steps {
-                sh 'apt-get update && apt-get install -y nodejs npm'
+                sh 'sudo apt-get install -y nodejs'
+                sh 'sudo apt-get install -y npm'
                 sh 'npm install'
             }
         }
